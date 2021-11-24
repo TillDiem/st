@@ -5,7 +5,7 @@
 
 buffer="$(cat)"
 #URLs:
-urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
+urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\!\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
 
 urls="$(echo "$buffer" | sed 's/.*│//g' | tr -d '\n' | # First remove linebreaks and mutt sidebars:
 	grep -aEo "$urlregex" | # grep only urls as defined above.
@@ -17,7 +17,7 @@ all="$(echo "$buffer" | perl -pe 's/[^│]*([^│]*?)│/\1/' |
 	perl -pe 's/^.*?\| //' |
 	sed 's/ │.*//' |
 	head -n-2 | tr -d '\n'|
-	grep -aEo '(<[^]>]*>|\[[^ ]*\])' |
+	grep -aEo '(<[^]><]*> |\[[^]]*:\/\/[^]]*\])' |
 	grep -Ev "<(Unable to|Message redacted)" )" #filter out <Unable to decrypt: and <Message redacted by: <user>...
 
 
@@ -47,7 +47,7 @@ choice="$(echo "$selection" | dmenu -i -p "open which $prompt?" -l 10)"
 [ -z "$choice" ] && exit
 
 #TODO: check for robustness of multifile support
-echo "$choice" | while read -r choiceline; do
+echo "$choice" | tac | while read -r choiceline; do
 	#open dmenuhandler for URLs
 	if echo "$urls" | grep -q "^$choiceline$"; then
 		dmenuhandler "$choiceline"
@@ -64,13 +64,19 @@ echo "$choice" | while read -r choiceline; do
 		echo "link:$link"
 		if [ "$(echo "$link" | wc -l)" -eq 1 ]; then
 			if echo "$link" | grep -qE '^emxc'; then
-				echo Decrypting...
-				matrix_decrypt --plumber rifle "$link" #"/tmp/$choiceline"
+				matrix_decrypt "$link" "/tmp/$choiceline"
 			else
-				echo Curling...
 				curl -L "$link" -o "/tmp/$choiceline"
+			fi
+			## OPENING OF FILE
+			# assume EDITOR to be terminal based
+			# thus open in new terminal instance.
+			if rifle -l "/tmp/$choiceline" | head -n1 | grep -qE '(EDITOR|PAGER)';then
+				${TERMINAL:-st} rifle "/tmp/$choiceline" &
+			else
 				rifle "/tmp/$choiceline"
 			fi
+
 		else
 				notify-send "weechatdls" "multi-link downloads not yet supported"
 		fi

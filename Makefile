@@ -51,7 +51,7 @@ install: st
 	cp -f st-weechatlinks $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-copyout
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-linkhandler
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-urlhandler
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-emailhandler
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-weechatlinks
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
@@ -64,7 +64,9 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-copyout
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-linkhandler
+	rm -f $(DESTDIR)$(PREFIX)/bin/st-urlhandler
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-emailhandler
+	rm -f $(DESTDIR)$(PREFIX)/bin/st-weechatlinks
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/st.1
 
 .PHONY: all options clean dist install uninstall
