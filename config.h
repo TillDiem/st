@@ -111,33 +111,34 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
-float alpha = 0.001;
+float alpha = 1;
 
 
 
 static const char *colorname[] = {
-	"#282828", /* hard contrast: #1d2021 / soft contrast: #32302f */
-	"#cc241d",
-	"#98971a",
-	"#d79921",
-	"#458588",
-	"#b16286",
-	"#689d6a",
-	"#a89984",
-	"#928374",
-	"#fb4934",
-	"#b8bb26",
-	"#fabd2f",
-	"#83a598",
-	"#d3869b",
-	"#8ec07c",
-	"#ebdbb2",
+	"#171b24", /* header color */ /*black*/
+	"#d95757", /* error */ /*red*/
+	"#AAD94C", /* commands / nef / etc */ /*green*/
+	"#E6B450", /* line colors in newsboat */ /*yellow*/
+	"#478ACC", /*blue*/
+	"#6c5980", /*magenta*/
+	"#39BAE6", /*cyan*/
+	"#BFBDB6", /*white*/
+	/*bright colors*/
+	"#1A1F29", /*black*/
+	"#FF6666", /*red*/
+	"#86B300", /*green*/
+	"#FFAA33", /*yellow*/
+	"#1b3a5b", /* written text - folders */ /*blue*/
+	"#A37ACC", /*magenta*/
+	"#399EE6", /*cyan*/
+	"#FCFCFC", /*white*/
 	[255] = 0,
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#add8e6", /* 256 -> cursor */
+	"#BFBDB6", /* 256 -> cursor */
 	"#555555", /* 257 -> rev cursor*/
-	"#282828", /* 258 -> bg */
-	"#ebdbb2", /* 259 -> fg */
+	"#0D1017", /* 258 -> bg */
+	"#BFBDB6", /* 259 -> fg text and files */
 };
 
 
@@ -262,6 +263,7 @@ static Shortcut shortcuts[] = {
 	{ MODKEY,               XK_v,           clippaste,      {.i =  0} },
 	{ XK_ANY_MOD,		Button2,	selpaste,	{.i =  0} },
 	{ MODKEY,               XK_Num_Lock,    numlock,        {.i =  0} },
+	{ MODKEY,               XK_Return,      newterm,        {.i =  0} },
 	{ MODKEY,               XK_Control_L,   iso14755,       {.i =  0} },
 	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
 	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },

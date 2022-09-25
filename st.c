@@ -21,6 +21,7 @@
 #include "st.h"
 #include "win.h"
 
+
 #if   defined(__linux)
  #include <pty.h>
 #elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
@@ -168,6 +169,7 @@ typedef struct {
 } STREscape;
 
 static void execsh(char *, char **);
+static char *getcwd_by_pid(pid_t pid);
 static void stty(char **);
 static void sigchld(int);
 static void ttywriteraw(const char *, size_t);
@@ -826,6 +828,8 @@ ttynew(char *line, char *cmd, char *out, char **args)
 		if (pledge("stdio rpath tty proc", NULL) == -1)
 			die("pledge\n");
 #endif
+
++		fcntl(m, F_SETFD, FD_CLOEXEC);
 		close(s);
 		cmdfd = m;
 		signal(SIGCHLD, sigchld);
@@ -1078,6 +1082,36 @@ tswapscreen(void)
 	term.mode ^= MODE_ALTSCREEN;
 	tfulldirt();
 }
+
+
+void
+newterm(const Arg* a)
+{
+	switch (fork()) {
+	case -1:
+		die("fork failed: %s\n", strerror(errno));
+		break;
+	case 0:
+		chdir(getcwd_by_pid(pid));
+		execlp("st", "./st", NULL);
+		break;
+	}
+}
+
+static char *getcwd_by_pid(pid_t pid) {
+	char buf[32];
+	snprintf(buf, sizeof buf, "/proc/%d/cwd", pid);
+	return realpath(buf, NULL);
+}
+
+
+static int chdir_by_pid(pid_t pid) {
+	char buf[32];
+	snprintf(buf, sizeof buf, "/proc/%ld/cwd", (long)pid);
+	return chdir(buf);
+}
+
+
 
 void
 kscrolldown(const Arg* a)

@@ -1,7 +1,5 @@
 # My fork of the simple [suckless terminal (st)](https://st.suckless.org/)
 
-This fork builds on the st of [Luke Smith](https://github.com/lukesmithxyz) and [Alexander Bocken](https://github.com/alexbocken)
-
 ## Unique features (using dmenu)
 
 + **follow urls** by pressing `alt-l`
